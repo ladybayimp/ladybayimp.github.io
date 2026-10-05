@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tesla authorize callback</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; }
+    #value { font-size: 1.5rem; word-break: break-all; background: #f4f4f4; padding: 1rem; border-radius: 8px; }
+    button { margin-top: 1rem; padding: 0.6rem 1rem; font-size: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Authorization result</h1>
+  <p id="label">Code</p>
+  <pre id="value"></pre>
+  <button type="button" id="copy">Copy</button>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const err = params.get("error");
+    const code = params.get("code");
+    const el = document.getElementById("value");
+    const label = document.getElementById("label");
+    if (err) {
+      label.textContent = "Error";
+      el.textContent = err + (params.get("error_description") ? ": " + params.get("error_description") : "");
+    } else if (code) {
+      label.textContent = "Code (paste this back to the bot)";
+      el.textContent = code;
+    } else {
+      label.textContent = "Nothing found";
+      el.textContent = "No code or error in the URL.";
+    }
+    document.getElementById("copy").onclick = async () => {
+      await navigator.clipboard.writeText(el.textContent);
+      document.getElementById("copy").textContent = "Copied";
+    };
+  </script>
+</body>
+</html>
